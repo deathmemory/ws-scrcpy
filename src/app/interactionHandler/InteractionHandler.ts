@@ -288,7 +288,7 @@ export abstract class InteractionHandler {
             if (!previous) {
                 if (
                     (originalEvent instanceof MouseEvent && originalEvent.buttons) ||
-                    (window['TouchEvent'] && originalEvent instanceof TouchEvent)
+                    (typeof TouchEvent !== 'undefined' && originalEvent instanceof TouchEvent)
                 ) {
                     console.warn(logPrefix, 'Received ACTION_MOVE while there are no DOWN stored');
                     const emulated = InteractionHandler.createEmulatedMessage(MotionEvent.ACTION_DOWN, message);

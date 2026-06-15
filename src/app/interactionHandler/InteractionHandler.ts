@@ -461,19 +461,23 @@ export abstract class InteractionHandler {
         const messages: TouchControlMessage[] = [];
         const touches = e.changedTouches;
         if (touches && touches.length) {
+            const tagRect = this.tag.getBoundingClientRect();
             for (let i = 0, l = touches.length; i < l; i++) {
                 const touch = touches[i];
                 const pointerId = InteractionHandler.getPointerId(e.type, touch.identifier);
-                if (touch.target !== this.tag) {
+                const previous = storage.get(pointerId);
+                const withinBounds =
+                    touch.clientX >= tagRect.left && touch.clientX <= tagRect.right &&
+                    touch.clientY >= tagRect.top && touch.clientY <= tagRect.bottom;
+                if (!withinBounds && !previous) {
                     continue;
                 }
-                const previous = storage.get(pointerId);
                 const item: CommonTouchAndMouse = {
                     clientX: touch.clientX,
                     clientY: touch.clientY,
                     type: e.type,
                     buttons: MotionEvent.BUTTON_PRIMARY,
-                    target: e.target,
+                    target: this.tag,
                 };
                 const event = InteractionHandler.buildTouchOnClient(item, screenInfo);
                 if (event) {
